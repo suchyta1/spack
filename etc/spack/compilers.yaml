@@ -1,0 +1,28 @@
+compilers:
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: rhel7
+    paths:
+      cc: /autofs/nccs-svm1_sw/summit/.swci/0-core/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/pgi-19.4-6acz4xyqjlpoaonjiiqjme2aknrfnzoy/linuxpower/19.4/bin/pgcc
+      cxx: /autofs/nccs-svm1_sw/summit/.swci/0-core/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/pgi-19.4-6acz4xyqjlpoaonjiiqjme2aknrfnzoy/linuxpower/19.4/bin/pgc++
+      f77: /autofs/nccs-svm1_sw/summit/.swci/0-core/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/pgi-19.4-6acz4xyqjlpoaonjiiqjme2aknrfnzoy/linuxpower/19.4/bin/pgfortran
+      fc: /autofs/nccs-svm1_sw/summit/.swci/0-core/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/pgi-19.4-6acz4xyqjlpoaonjiiqjme2aknrfnzoy/linuxpower/19.4/bin/pgfortran
+    spec: pgi@19.4
+    target: ppc64le
+- compiler:
+    environment: {}
+    extra_rpaths:
+    - /sw/summit/gcc/9.1.0-alpha+20190716/lib64/
+    flags: {}
+    modules: []
+    operating_system: rhel7
+    paths:
+      cc: /autofs/nccs-svm1_sw/summit/gcc/9.1.0-alpha+20190716/bin/gcc
+      cxx: /autofs/nccs-svm1_sw/summit/gcc/9.1.0-alpha+20190716/bin/g++
+      f77: /autofs/nccs-svm1_sw/summit/gcc/9.1.0-alpha+20190716/bin/gfortran
+      fc: /autofs/nccs-svm1_sw/summit/gcc/9.1.0-alpha+20190716/bin/gfortran
+    spec: gcc@9.1.0
+    target: ppc64le

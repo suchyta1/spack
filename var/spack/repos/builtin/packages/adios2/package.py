@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 from spack import *
+import os
 
 
 class Adios2(CMakePackage):
@@ -99,9 +100,13 @@ class Adios2(CMakePackage):
     depends_on('sz@:2.0.2.0', when='+sz')
 
     extends('python', when='+python')
+    """
     depends_on('python@2.7:2.8,3.5:',
                when='@:2.4.0 +python', type=('build', 'run'))
     depends_on('python@3.5:', when='@2.5.0: +python', type=('build', 'run'))
+    """
+    depends_on('python@2.7:2.8,3.5:', when='+python', type=('build', 'run'))
+
     depends_on('py-numpy@1.6.1:', type=('build', 'run'), when='+python')
     depends_on('py-mpi4py@2.0.0:', type=('build', 'run'), when='+mpi +python')
 
@@ -110,6 +115,8 @@ class Adios2(CMakePackage):
     patch('cmake-update-findmpi.patch', when='@2.4.0')
 
     def cmake_args(self):
+        filter_file('(COMPONENTS Interp Libs numpy)', 'COMPONENTS Interp Libs', os.path.join('cmake', 'DetectOptions.cmake'))
+        filter_file('-flto\$\{linker_append\}', '-fno-lto', "thirdparty/pybind11/pybind11/tools/pybind11Tools.cmake")
         spec = self.spec
 
         args = [
