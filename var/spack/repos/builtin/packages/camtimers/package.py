@@ -13,17 +13,15 @@ class Camtimers(MakefilePackage):
 
     homepage = "https://bitbucket.org/madams/epsi/overview"
     url = "https://bitbucket.org/madams/epsi/overview"
-    #version('xgc', git='https://bitbucket.org/madams/epsi.git', branch='codecamp2017')
-    version('xgc', git='https://github.com/suchyta1/XGC-User.git', branch='suchyta')
+    #version('xgc', git='https://github.com/suchyta1/XGC-User.git', branch='suchyta')
+    version('xgc', git='https://github.com/suchyta1/camtimers.git', branch='master')
 
+    variant('openmp', default=True, description='Use openmp')
     depends_on('mpi')
-
     """
     variant('papi', default=True, description='Require PAPI')
     depends_on('papi', when="+papi")
     """
-    variant('openmp', default=True, description='Use openmp')
-
 
     def setup_environment(self, spack_env, run_env):
         self.machine = 'spack'

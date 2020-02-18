@@ -11,7 +11,7 @@ class GeneAll(MakefilePackage):
     homepage = "http://genecode.org/"
     url = "http://genecode.org/"
 
-    version('gabriele', git='git@github.com:suchyta1/gene-coupling.git', branch='ecp+xgc')
+    version('gabriele', git='https://github.com/suchyta1/gene-coupling.git', branch='ecp+xgc')
 
     variant('couple', default="none", description='Spatial coupling', values=["xgc-edge"])
     variant('gptl', default=False, description='Use GPTL timing')
@@ -32,7 +32,7 @@ class GeneAll(MakefilePackage):
     depends_on('hdf5 @:1.8.19 +mpi +fortran +hl')
     depends_on('gptl +noomp +nonano', when="+gptl")
 
-    depends_on("dataspaces")
+    #depends_on("dataspaces")
     depends_on("adios")
     depends_on("adios2", when="+adios2")
     depends_on("kittie", when="+effis")
@@ -91,7 +91,8 @@ class GeneAll(MakefilePackage):
         if self.spec.satisfies('^netlib-scalapack'):
             filter_file('^\s*(SCALAPACK\s*=\s*.*)$', 'SCALAPACK = yes\n', self.makefile)
             with open(self.makefile, "a") as outfile:
-                outfile.write("LIBS += -lscalapack\n")
+                #outfile.write("LIBS += -lscalapack\n")
+                outfile.write("LIBS += -lscalapack -llapack -lblas\n")
 
         if spec.satisfies('+gptl'):
             with open(self.makefile, "a") as outfile:
