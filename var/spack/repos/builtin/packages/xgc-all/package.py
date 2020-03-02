@@ -27,25 +27,36 @@ class XgcAll(CMakePackage):
     depends_on('parmetis')
     depends_on('metis +real64')
     depends_on('hdf5 +mpi +fortran +hl')
+    #depends_on('adios2 -python')
     depends_on('adios2')
     depends_on("adios")
     depends_on('kittie', when="+effis")
-    #depends_on("dataspaces")
 
     depends_on('petsc -complex -superlu-dist @3.7.0:3.7.99',  when="@gabriele")
-    depends_on('petsc -complex -superlu-dist @3.7.0:3.10.99', when="@suchyta")
+    #depends_on('petsc -complex -superlu-dist @3.7.0:3.10.99', when="@suchyta")
+    depends_on('petsc -complex -superlu-dist @3.7.0:3.7.99', when="@suchyta")
     depends_on('petsc -complex -superlu-dist', when="@master")
 
-    depends_on('cuda', when='+gpu')
     depends_on('pspline-devel', when="@suchyta")
     depends_on('pspline-devel', when="@gabriele")
-    depends_on('pspline-devel', when="@master +gpu")
+    #depends_on('pspline-devel', when="@master +gpu")
     depends_on('camtimers +openmp', when="@suchyta +omp")
     depends_on('camtimers -openmp', when="@suchyta -omp")
     depends_on('camtimers +openmp', when="@gabriele +omp")
     depends_on('camtimers -openmp', when="@gabriele -omp")
     depends_on('camtimers +openmp', when="@master +gpu +omp")
     depends_on('camtimers -openmp', when="@master +gpu -omp")
+
+    #depends_on('cuda', when='+gpu')
+    #depends_on('cuda', when="@master +gpu")
+
+    depends_on('kokkos-cmake@develop -hwloc +serial +openmp +cuda +enable_lambda gpu_arch=Volta70', when="@master +gpu")
+    depends_on('kokkos-cmake@develop +serial +openmp -cuda', when="@master -gpu")
+    depends_on('cabana@develop +serial +openmp +cuda', when="@master +gpu")
+    depends_on('cabana@develop +serial +openmp -cuda', when="@master -gpu")
+
+    conflicts("@gabriele", when="+gpu")
+    #parallel = False
 
 
     def edit(self, spec, prefix):
@@ -120,31 +131,20 @@ class XgcAll(CMakePackage):
         filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -J', self.makefile)
         filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -O3 -fPIC -ffree-line-length-0 -fopenmp', self.makefile)
 
-    @when("@suchyta -omp %gcc")
-    def compiler_based(self):
-        filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -J', self.makefile)
-        filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -O3 -fPIC -ffree-line-length-0', self.makefile)
-
     @when("@suchyta +omp %pgi")
     def compiler_based(self):
         filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -module', self.makefile)
         filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -fast -D__PGI -fpic -mp', self.makefile)
 
+    @when("@suchyta -omp %gcc")
+    def compiler_based(self):
+        filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -J', self.makefile)
+        filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -O3 -fPIC -ffree-line-length-0', self.makefile)
+
     @when("@suchyta -omp %pgi")
     def compiler_based(self):
         filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -module', self.makefile)
         filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -fast -D__PGI -fpic', self.makefile)
-
-
-    @when("@master +omp %gcc")
-    def compiler_based(self):
-        filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -J', self.makefile)
-        filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -O3 -fPIC -ffree-line-length-0 -fopenmp', self.makefile)
-
-    @when("@master +omp %pgi")
-    def compiler_based(self):
-        filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -module', self.makefile)
-        filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -fast -D__PGI -fpic -mp', self.makefile)
 
 
     @when("@suchyta +gpu")
@@ -200,10 +200,17 @@ class XgcAll(CMakePackage):
         install(self.makefile, os.path.join(self.prefix.bin))
 
 
-    @when("@master -gpu")
-    def setup_environment(self, spack_env, run_env):
-        spack_env.set("XGC_PLATFORM", "generic")
-        self.makefile = os.path.join("build", "make.inc.generic")
+    '''
+    @when("@master +omp %gcc")
+    def compiler_based(self):
+        filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -J', self.makefile)
+        filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -O3 -fPIC -ffree-line-length-0 -fopenmp', self.makefile)
+
+    @when("@master +omp %pgi")
+    def compiler_based(self):
+        filter_file('^\s*(MOD_DIR_OPT\s*=.*)$', 'MOD_DIR_OPT = -module', self.makefile)
+        filter_file('^\s*(FFLAGS\s*=.*)$', 'FFLAGS = -fast -D__PGI -fpic -mp', self.makefile)
+
 
     @when("@master +gpu")
     def setup_environment(self, spack_env, run_env):
@@ -236,11 +243,50 @@ class XgcAll(CMakePackage):
         mkdirp(self.prefix.bin)
         install(os.path.join("xgc_build", binary), self.prefix.bin, binary)
         install(self.makefile, os.path.join(self.prefix.bin))
+    '''
 
 
-    @when("@master -gpu")
+    @when("@master")
+    def setup_environment(self, spack_env, run_env):
+        spack_env.set("XGC_PLATFORM", "generic")
+        """
+        if self.spec.satisfies("+gpu"):
+            #spack_env.set('NVCC_WRAPPER_DEFAULT_COMPILER', self.spec['mpi'].mpicxx)
+            spack_env.set('NVCC_WRAPPER_DEFAULT_COMPILER', 'g++')
+        """
+
+    @when("@master")
     def cmake_args(self):
-        args = []
+        #filter_file('include\(find_dependencies', 'MESSAGE(STATUS ${XGC_PLATFORM})\ninclude(find_dependencies', join_path(self.stage.source_path, 'CMakeLists.txt'))
+        #filter_file('INTERFACE kokkos', 'INTERFACE OpenMP::OpenMP_CXX', join_path(self.stage.source_path, 'CMakeLists.txt'))
+
+        filter_file('if\(Kokkos_FOUND\)', 'if(NOT Kokkos_FOUND)', join_path(self.stage.source_path, 'CMake', 'FindKokkos.cmake'))
+        filter_file('kokkos', 'Kokkos::kokkos', join_path(self.stage.source_path, 'CMake', 'FindCabana.cmake'))
+
+        filter_file('TARGET kokkos', 'TARGET Kokkos::kokkos', join_path(self.stage.source_path, 'CMakeLists.txt'))
+        filter_file('INTERFACE kokkos', 'INTERFACE Kokkos::kokkos', join_path(self.stage.source_path, 'CMakeLists.txt'))
+        #filter_file('INTERFACE kokkos', 'INTERFACE OpenMP::OpenMP_CXX -std=c++11', join_path(self.stage.source_path, 'CMakeLists.txt'))
+
+        args = ['-DCMAKE_Fortran_COMPILER={0}'.format(self.spec['mpi'].mpifc)]
+
+        if self.spec.satisfies("+gpu"):
+            if self.spec.satisfies('%gcc'):
+                filter_file('"PGI"', '"GNU"', join_path(self.stage.source_path, 'CMakeLists.txt'))
+                filter_file('__PGI', '__GFORTRAN__', join_path(self.stage.source_path, 'CMakeLists.txt'))
+                filter_file('XGC_HAVE_OpenACC TRUE', 'XGC_HAVE_OpenACC FALSE', join_path(self.stage.source_path, 'CMakeLists.txt'))
+            """
+            elif self.spec.satisfies('%pgi'):
+                filter_file('"PGI"', '"GNU"', join_path(self.stage.source_path, 'CMakeLists.txt'))
+                #filter_file('LINKER_LANGUAGE Fortran', 'OUTPUT_NAME ${exe}', join_path(self.stage.source_path, 'CMakeLists.txt'))
+                args += ['-DCMAKE_LINKER=gfortran']
+                args += ['-DCMAKE_Fortran_LINK_EXECUTABLE=<CMAKE_LINKER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>']
+                #args += ['-DCMAKE_CXX_LINK_EXECUTABLE=<CMAKE_LINKER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> <LINK_LIBRARIES>']
+            """
+            args += ['-DCMAKE_CXX_COMPILER={0}'.format(join_path(self.spec['kokkos-cmake'].prefix.bin, 'nvcc_wrapper'))]
+
+        else:
+            args += ['-DCMAKE_CXX_COMPILER={0}'.format(self.spec['mpi'].mpicxx)]
+
         if self.spec.satisfies('+effis'):
             args += ["-DEFFIS=ON"]
         if self.spec.satisfies('-tests'):
@@ -250,15 +296,12 @@ class XgcAll(CMakePackage):
             filter_file('CONVERT_GRID2', "", os.path.join('XGC_core', 'CMakeLists.txt'))  # I don't have an appropriate file to configure with yet
         return args
 
-    @when("@master -gpu")
+    @when("@master")
     def install(self, spec, prefix):
         mkdirp(self.prefix.bin)
-        if spec.satisfies("@suchyta"):
-            binary = "xgc-es"
-            install(os.path.join(self.build_directory, "XGC1", binary), self.prefix.bin)
-        else:
-            binary = "xgc1-es"
-            install(os.path.join(self.build_directory, "XGC1", binary), self.prefix.bin)
+        install(join_path(self.build_directory, "bin", "xgc-es-cpp"), self.prefix.bin)
+        if self.spec.satisfies("+gpu"):
+            install(join_path(self.build_directory, "bin", "xgc-es-cpp-gpu"), self.prefix.bin)
 
 
     @when("@gabriele -gpu")
@@ -278,7 +321,6 @@ class XgcAll(CMakePackage):
             filter_file("-fopenmp", "", self.makefile)
         elif self.spec.satisfies("%pgi"):
             filter_file("-fopenmp", "-mp", self.makefile)
-
 
     @when("@gabriele -gpu")
     def build(self, spec, prefix):
