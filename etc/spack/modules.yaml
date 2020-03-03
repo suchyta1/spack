@@ -1,12 +1,6 @@
 modules:
   enable:
   - tcl
-  - lmod
-
-  lmod:
-    core_compilers:
-    - 'gcc@8.1.0'
-    - 'pgi@19.4'
 
   prefix_inspections:
     bin:
@@ -34,6 +28,10 @@ modules:
     lib/python3.7/site-packages:
       - PYTHONPATH
     lib64/python3.7/site-packages:
+      - PYTHONPATH
+    lib/python3.6/site-packages:
+      - PYTHONPATH
+    lib64/python3.6/site-packages:
       - PYTHONPATH
     lib/python2.7/site-packages:
       - PYTHONPATH

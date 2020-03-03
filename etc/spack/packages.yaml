@@ -1,126 +1,48 @@
 packages:
   all:
-    compiler: [gcc@9.1.0, pgi@19.4]
+    compiler: [gcc@7.4.0]
     providers:
       blas: [netlib-lapack]
       lapack: [netlib-lapack]
-      mpi: [spectrum-mpi]
+      mpi: [mpich]
       scalapack: [netlib-scalapack]
 
-  spectrum-mpi: 
-    version: [summit]
+  mpich: 
+    version: [3.3]
     paths:
-      'spectrum-mpi@summit %gcc@9.1.0': /autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-9.1.0/spectrum-mpi-10.3.0.1-20190611-2juhkwlddpdydl2yasmuia2slpev6fl5
-      'spectrum-mpi@summit %pgi@19.4':  /autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/pgi-19.4/spectrum-mpi-10.3.0.1-20190611-4ymaahbai7ehhw4rves5jjiwon2laz3a
-
-  pkgconf:
-    modules:
-      'pkgconf %pgi@19.4': pkgconf/1.5.4
-
-  diffutils:
-    modules:
-      'diffutils %pgi@19.4': diffutils/3.7
-
-  perl:
-    paths:
-      'perl %pgi@19.4': /usr
-
-  lz4:
-    paths:
-      'lz4 %pgi@19.4': /usr
-
-  gettext:
-    paths:
-      'gettext %pgi@19.4': /usr
-
-  openssl:
-    paths:
-      'openssl %pgi@19.4': /usr
-
-  tar:
-    modules:
-      'tar %pgi@19.4': tar/1.31
-
-  numactl:
-    paths:
-      'numactl %pgi@19.4': /usr
-
-  cmake:
-    paths:
-      #'cmake %pgi@19.4': /autofs/nccs-svm1_sw/summit/.swci/0-core/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/cmake-3.15.2-xit2o3iepxvqbyku77lwcugufilztu7t
-      'cmake %pgi@19.4': /ccs/home/esuchyta/spack/view/cmake
-
-  zstd:
-    paths:
-      'zstd %pgi@19.4.': /ccs/home/esuchyta/spack/view/zstd-1.4.3
-
-  c-blosc:
-    paths:
-      'c-blosc %pgi@19.4': /ccs/home/esuchyta/spack/view/c-blosc-1.17.0
-
-  camtimers:
-    paths:
-      'camtimers %pgi@19.4': /ccs/home/shku/Software/install/summit/camtimers/pgi19.4
-
-  pspline:
-    paths:
-      'pspline %pgi@19.4': /ccs/home/shku/Software/install/summit/pspline/pgi19.4
-
-
-  # I don't know if this is just a PGI thing or also GCC isn't working
-  fftw:
-    paths:
-      'fftw %gcc@9.1.0': /autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/gcc-6.4.0/fftw-3.3.8-fr4h5sbpztnrzxxtbrkpuicqmksqs2wl
-      'fftw %pgi@19.4':  /autofs/nccs-svm1_sw/summit/.swci/1-compute/opt/spack/20180914/linux-rhel7-ppc64le/pgi-19.4/fftw-3.3.8-2fp4ghpiwcghmgam6fy7dyodnibxfk25
-
-  rdma-core:
-    paths:
-      rdma-core: /usr
-
-  cuda:
-    paths:
-      #cuda: /sw/summit/cuda/10.1.105
-      cuda: /sw/summit/cuda/10.1.168
+      'mpich@3.3 %gcc@7.4.0': /usr
 
   python:
-    version: [3.7.0, 2.7.15]
+    version: [3.6.9]
     paths:
-      'python@2.7.15': /autofs/nccs-svm1_sw/summit/.swci/0-core/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/python-2.7.15-jhok7d6zokcxqb27ze7bv2pnn2b4qvbp
-      'python@3.7.0':  /autofs/nccs-svm1_sw/summit/.swci/0-core/opt/spack/20180914/linux-rhel7-ppc64le/gcc-4.8.5/python-3.7.0-ei3mpdncii74xsn55t5kxpuc46i3oezn
-
+      'python@3.6.9': /usr
 
   py-numpy:
+    version: [1.16.5]
     paths:
-      'py-numpy ^ python@2.7.15': /ccs/home/esuchyta/spack/view/python-2.7.15
-      'py-numpy ^ python@3.7.0':  /ccs/home/esuchyta/spack/view/python-3.7.0
+      'py-numpy ^ python@3.6.9':  /usr
 
   py-mpi4py:
     paths:
-      'py-mpi4py ^ python@2.7.15': /ccs/home/esuchyta/spack/view/python-2.7.15
-      'py-mpi4py ^ python@3.7.0':  /ccs/home/esuchyta/spack/view/python-3.7.0
+      'py-mpi4py ^ python@3.6.9':  /usr
 
-  petsc:
-    version: [3.11.4]
+  py-pyyaml:
+    paths:
+      'py-pyyaml ^ python@3.6.9':  /usr
 
-  adios:
-    version: [develop]
-    variants: '+mpi +fortran +sz -mgard -zfp staging=none'
-
-  dataspaces:
-    version: [develop]
-    variants: '+fpic maxdims=10 network-type=infiniband +dimes'
 
   libfabric:
-    variants: "fabrics=verbs"
+    variants: "fabrics=sockets"
 
   adios2:
     version: [2.5.0, develop]
-    variants: '+python +mpi +sst +dataman build_type=Release'
+    variants: '+python +mpi +sst +ssc +dataman build_type=Release'
+
+  #kittie:
+  #  version: [develop]
+  #  variants: '+mpi +python-prefix -touch -fine-time'
+
+  cuda:
     paths:
-      'adios2 %pgi@19.4': /ccs/home/shku/Software/install/summit/adios2/devel/pgi19.4
-
-  kittie:
-    version: [develop]
-    variants: '+mpi +python-prefix -touch -fine-time'
-
+      cuda: /usr
 
