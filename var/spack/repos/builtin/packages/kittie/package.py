@@ -9,7 +9,8 @@ class Kittie(CMakePackage):
 
     homepage = "https://github.com/suchyta1/kittie"
     url = homepage
-    version('develop', git='https://github.com/suchyta1/kittie.git', branch='monitor', preferred=True)
+    #version('develop', git='https://github.com/suchyta1/kittie.git', branch='monitor', preferred=True)
+    version('develop', git='https://github.com/suchyta1/kittie.git', branch='dashboard', preferred=True)
     version('machine', git='https://github.com/suchyta1/kittie.git', branch='machine', preferred=False)
     version('master',  git='https://github.com/suchyta1/kittie.git', branch='master',  preferred=False)
 
@@ -22,12 +23,16 @@ class Kittie(CMakePackage):
     depends_on('mpi', when="+mpi")
     depends_on('cmake')
     depends_on('adios2')
-    depends_on('yaml-cpp')
 
+    depends_on('yaml-cpp')
     depends_on('py-pyyaml')
+    depends_on('py-numpy')
+    depends_on('py-mpi4py', when="+mpi")
+    
     extends('python')
     depends_on('python@2.7:', type=('build', 'run'))
-
+    #depends_on('savanna@develop', when="^python@3:")
+    depends_on('codar-cheetah@develop', when="^python@3:")
 
     def cmake_args(self):
         args = []

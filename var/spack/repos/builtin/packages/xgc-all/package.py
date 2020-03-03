@@ -27,9 +27,9 @@ class XgcAll(CMakePackage):
     depends_on('parmetis')
     depends_on('metis +real64')
     depends_on('hdf5 +mpi +fortran +hl')
-    #depends_on('adios2 -python')
-    depends_on('adios2')
-    depends_on("adios")
+    depends_on('adios2 -python')
+    #depends_on('adios2')
+    depends_on("adios +fortran")
     depends_on('kittie', when="+effis")
 
     depends_on('petsc -complex -superlu-dist @3.7.0:3.7.99',  when="@gabriele")
@@ -56,7 +56,7 @@ class XgcAll(CMakePackage):
     depends_on('cabana@develop +serial +openmp -cuda', when="@master -gpu")
 
     conflicts("@gabriele", when="+gpu")
-    #parallel = False
+    parallel = False
 
 
     def edit(self, spec, prefix):

@@ -24,7 +24,6 @@ class GeneAll(MakefilePackage):
     depends_on('scalapack')
     depends_on('mpi')
     depends_on('petsc +complex')
-    #depends_on('slepc')
     depends_on('python')
 
     parallel = True
@@ -32,8 +31,7 @@ class GeneAll(MakefilePackage):
     depends_on('hdf5 @:1.8.19 +mpi +fortran +hl')
     depends_on('gptl +noomp +nonano', when="+gptl")
 
-    #depends_on("dataspaces")
-    depends_on("adios")
+    depends_on("adios +fortran")
     depends_on("adios2", when="+adios2")
     depends_on("kittie", when="+effis")
 
