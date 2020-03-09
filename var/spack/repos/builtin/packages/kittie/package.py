@@ -10,8 +10,7 @@ class Kittie(CMakePackage):
     homepage = "https://github.com/suchyta1/kittie"
     url = homepage
     #version('develop', git='https://github.com/suchyta1/kittie.git', branch='monitor', preferred=True)
-    version('develop', git='https://github.com/suchyta1/kittie.git', branch='dashboard', preferred=True)
-    version('machine', git='https://github.com/suchyta1/kittie.git', branch='machine', preferred=False)
+    version('develop', git='https://github.com/suchyta1/kittie.git', branch='develop', preferred=True)
     version('master',  git='https://github.com/suchyta1/kittie.git', branch='master',  preferred=False)
 
     variant("mpi", default=True, description="Use MPI")

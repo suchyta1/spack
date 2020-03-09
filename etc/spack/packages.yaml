@@ -30,19 +30,16 @@ packages:
     paths:
       'py-pyyaml ^ python@3.6.9':  /usr
 
+  cuda:
+    paths:
+      cuda: /usr
 
   libfabric:
     variants: "fabrics=sockets"
 
   adios2:
     version: [2.5.0, develop]
-    variants: '+python +mpi +sst +ssc +dataman build_type=Release'
+    variants: '+python build_type=Release'
 
-  #kittie:
-  #  version: [develop]
-  #  variants: '+mpi +python-prefix -touch -fine-time'
-
-  cuda:
-    paths:
-      cuda: /usr
-
+  kittie:
+    version: [develop]
