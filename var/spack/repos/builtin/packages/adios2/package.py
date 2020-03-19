@@ -98,6 +98,7 @@ class Adios2(CMakePackage):
     depends_on('libpng@1.6:', when='@2.4: +png')
     depends_on('zfp@0.5.1:', when='+zfp')
     depends_on('sz@:2.0.2.0', when='+sz')
+    depends_on('zstd', when='+sz')
 
     extends('python', when='+python')
     """

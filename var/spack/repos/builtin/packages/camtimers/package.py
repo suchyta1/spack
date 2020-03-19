@@ -34,8 +34,12 @@ class Camtimers(MakefilePackage):
         self.camdir = os.path.join(pwd, 'libs', 'camtimers')
         self.camfile = os.path.join(self.camdir, 'MAKEFILES', "Makefile.osx".format(self.machine))
         if spec.satisfies("+openmp"):
-            filter_file('^\s*(FC\s*:=\s*.*)$', 'FC = {0} -fopenmp'.format(spec['mpi'].mpifc), self.camfile)
-            filter_file('^\s*(CC\s*:=\s*.*)$', 'CC = {0} -fopenmp'.format(spec['mpi'].mpicc), self.camfile)
+            if spec.satisfies("%gcc"):
+                filter_file('^\s*(FC\s*:=\s*.*)$', 'FC = {0} -fopenmp'.format(spec['mpi'].mpifc), self.camfile)
+                filter_file('^\s*(CC\s*:=\s*.*)$', 'CC = {0} -fopenmp'.format(spec['mpi'].mpicc), self.camfile)
+            elif spec.satisfies("%pgi"):
+                filter_file('^\s*(FC\s*:=\s*.*)$', 'FC = {0} -mp'.format(spec['mpi'].mpifc), self.camfile)
+                filter_file('^\s*(CC\s*:=\s*.*)$', 'CC = {0} -mp'.format(spec['mpi'].mpicc), self.camfile)
         else:
             filter_file('^\s*(FC\s*:=\s*.*)$', 'FC = {0}'.format(spec['mpi'].mpifc), self.camfile)
             filter_file('^\s*(CC\s*:=\s*.*)$', 'CC = {0}'.format(spec['mpi'].mpicc), self.camfile)
